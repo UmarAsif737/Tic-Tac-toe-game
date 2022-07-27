@@ -1,5 +1,9 @@
 import { useState, useEffect } from "react";
+
 const initVal = ["", "", "", "", "", "", "", "", ""];
+var valStore = ["", "", "", "", "", "", "", "", ""];
+let n = 0;
+let emp = "";
 function App() {
   const [signs, setSigns] = useState(initVal);
   const [player, setPlayer] = useState("X");
@@ -34,6 +38,8 @@ function App() {
       setTimeout(() => {
         alert("Won : " + player + " Click Ok to Play again");
         setSigns(initVal);
+        valStore = ["", "", "", "", "", "", "", "", ""];
+        n = 0;
       }, 100);
     }
   }
@@ -47,6 +53,8 @@ function App() {
       setTimeout(() => {
         alert("No one Won. Click Ok to Play again");
         setSigns(initVal);
+        valStore = ["", "", "", "", "", "", "", "", ""];
+        n = 0;
       }, 100);
     }
   }
@@ -56,7 +64,21 @@ function App() {
     setSigns(
       signs.map((sign, idx) => {
         if (idx == index && signs[index] === "") {
+          valStore[n] = idx;
+          n++;
           return player;
+        }
+        return sign;
+      })
+    );
+  };
+
+  const undo = () => {
+    let o = valStore[--n];
+    setSigns(
+      signs.map((sign, ido) => {
+        if (ido == o) {
+          return emp;
         }
         return sign;
       })
@@ -70,12 +92,31 @@ function App() {
         <div className="border-4 border-gray-600 h-96 w-96 grid grid-cols-3">
           {signs.map((val, i) => (
             <div
+              key={i}
               onClick={() => addSign(i)}
-              className="h-32 w-32 border-2 border-black flex items-center justify-center text-4xl text-black bg-slate-400 cursor-pointer active:bg-slate-300"
+              className="h-32 w-32 border-2 border-black flex items-center justify-center text-4xl text-black bg-gray-400 cursor-pointer active:bg-gray-300"
             >
               {val}
             </div>
           ))}
+        </div>
+        <div className="flex">
+          <div
+            onClick={() => {
+              setSigns(initVal);
+              valStore = ["", "", "", "", "", "", "", "", ""];
+              n = 0;
+            }}
+            className="m-4 p-2 font-Mochiy rounded-lg text-md text-black bg-blue-400 cursor-pointer active:bg-gray-300"
+          >
+            Reset Game
+          </div>
+          <div
+            onClick={() => undo()}
+            className="m-4 p-2 rounded-lg text-black bg-blue-400 cursor-pointer active:bg-gray-300"
+          >
+            <i className="fa-solid fa-arrow-rotate-left"></i>
+          </div>
         </div>
       </div>
     </div>
